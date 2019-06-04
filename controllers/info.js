@@ -2,33 +2,33 @@ const Config = require("../config/config.json");
 const { getInfo } = require("./guild");
 
 // setup channels
-const set = async (guild) => {
+const set = (guild) => {
     if (checkCategory(guild)) { return; }
-    try {
-        const category = await createCategory(guild);
+
+    createCategory(guild).then(async (category) => {
         await setCategoryPerms(guild, category);
         await createChannels(guild, category);
-    } catch (error) {
+    }).catch(error => {
         console.log(error);
-    }
+    });
 };
 
 //remove channels and category
-const unset = async (guild) => {
-    if (!checkCategory(guild)) { return; }
-    try {
-        const category = checkCategory(guild);
-        await deleteCategory(category);
-    } catch (error) {
-        console.log(error);
-    }
+const unset = (guild) => {
+    const category = checkCategory(guild);
+    if (!category) { return; }
+
+    deleteCategory(category);
 };
 
 // set channel names (values)
 const updateInfo = (guild) => {
     const category = checkCategory(guild);
-    const info = getInfo(guild);
     if (category) {
+        // check if 4 channels exists
+        if (category.children.size !== 4) { return; }
+        const info = getInfo(guild);
+
         let count = 0;
         let val;
         try {
@@ -54,23 +54,13 @@ const createChannels = (guild, category) => {
         createChannel(guild, category, 2),
         createChannel(guild, category, 3),
         createChannel(guild, category, 4)
-    ]).catch(error => console.log(error));
+    ]);
 };
 
 // delete category and channels under it
-const deleteCategory = async (category) => {
-    try {
-        category.children.every((channel) => {
-            channel.delete().then((channel) => {
-                console.log(`{${channel.guild.name}} channels deleted.`);
-            }).catch(error => {
-                console.log(error);
-            });
-        });
-        await category.delete();
-    } catch (error) {
-        console.log(error);
-    }
+const deleteCategory = (category) => {
+    category.children.deleteAll();
+    category.delete();
 };
 
 // create category
