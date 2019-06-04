@@ -12,7 +12,7 @@ client.on("message", message => {
     if (!(message.member && message.member.hasPermission("ADMINISTRATOR"))) {
         return;
     }
-
+    
     // check msg start with prefix
     if (message.content.startsWith(Config.BOT_PREFIX)) {
         // handle it
@@ -33,6 +33,8 @@ const handleCommand = (message, guild) => {
             Info.unset(guild);
             message.reply("Removing Simple Server Info!.");
             break;
+        default:
+            message.reply("I don't know that command boi!.");
     }
     // delete command
     message.delete(1000);
