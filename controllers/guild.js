@@ -1,9 +1,11 @@
+const Config = require("../config/config.json");
+
 const getInfo = (guild) => {
     return {
-        "channels": `Channel Count : ${getChannels(guild)}`,
-        "roles": `Role Count : ${getRoles(guild)}`,
-        "users": `User Count : ${getUsers(guild)}`,
-        "bots": `Bot Count : ${getBots(guild)}`
+        "channels": `${Config.CHANNEL_NAMES.channels} ${getChannels(guild)}`,
+        "roles": `${Config.CHANNEL_NAMES.roles} ${getRoles(guild)}`,
+        "users": `${Config.CHANNEL_NAMES.users} ${getUsers(guild)}`,
+        "bots": `${Config.CHANNEL_NAMES.bots} ${getBots(guild)}`
     };
 };
 
