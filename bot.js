@@ -12,7 +12,7 @@ client.on("message", message => {
     if (!(message.member && message.member.hasPermission("ADMINISTRATOR"))) {
         return;
     }
-    
+
     // check msg start with prefix
     if (message.content.startsWith(Config.BOT_PREFIX)) {
         // handle it
@@ -32,6 +32,10 @@ const handleCommand = (message, guild) => {
         case "remove":
             Info.unset(guild);
             message.reply("Removing Simple Server Info!.");
+            break;
+        case "help":
+            Info.unset(guild);
+            message.reply(`\nRun \`${Config.BOT_PREFIX} setup\` to start the bot.\nRun \`${Config.BOT_PREFIX} remove\` to remove bot channels.\n\n**Developed By ipmanlk & dexterlk @ LK Developers** (Join us: https://discord.gg/2PeSHh4)`);
             break;
         default:
             message.reply("I don't know that command boi!.");
