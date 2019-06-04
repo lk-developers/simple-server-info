@@ -5,6 +5,7 @@ const Info = require("./controllers/info");
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    updateActivity();
 });
 
 client.on("message", message => {
@@ -52,5 +53,20 @@ updateEvents.forEach(event => {
         Info.updateInfo(data.guild);
     });
 });
+
+// when bot is added to a new server, update activity
+client.on("guildCreate", () => {
+    updateActivity();
+});
+
+// when bot is removed from a server, update activity
+client.on("guildDelete", () => {
+    updateActivity();
+});
+
+// set activity
+const updateActivity = () => {
+    client.user.setActivity(`Serving ${client.guilds.size} servers | By ipmanlk@LKDevelopers🇱🇰`);
+};
 
 client.login(Config.BOT_TOKEN);
