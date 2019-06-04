@@ -1,38 +1,50 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const Config = require("./config/config.json");
-const Channel = require("./controllers/channel");
+const Info = require("./controllers/info");
 
 client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on("guildCreate", (guild) => {
-    Channel.handle(guild).catch(console.error());
+client.on("message", message => {
+    // check if user has admin perms
+    if (!(message.member && message.member.hasPermission("ADMINISTRATOR"))) {
+        return;
+    }
+
+    // check msg start with prefix
+    if (message.content.startsWith(Config.BOT_PREFIX)) {
+        // handle it
+        handleCommand(message, message.guild);
+    }
 });
 
-client.on("channelCreate", (channel) => {
-    Channel.handle(channel.guild).catch(console.error());
-});
+const handleCommand = (message, guild) => {
+    // get command from prefix
+    const command = message.content.split(" ")[1].trim();
+    // do relevent action to that command    
+    switch (command) {
+        case "setup":
+            Info.set(guild);
+            message.reply("Setting up Simple Server Info!.");
+            break;
+        case "remove":
+            Info.unset(guild);
+            message.reply("Removing Simple Server Info!.");
+            break;
+    }
+    // delete command
+    message.delete(1000);
+};
 
-client.on("channelDelete", (channel) => {
-    Channel.handle(channel.guild).catch(console.error());
-});
+// events which trigger update info
+const updateEvents = ["channelCreate", "channelDelete", "guildMemberAdd", "guildMemberRemove", "roleCreate", "roleDelete"];
 
-client.on("guildMemberAdd", (member) => {
-    Channel.handle(member.guild).catch(console.error());
-});
-
-client.on("guildMemberRemove", (member) => {
-    Channel.handle(member.guild).catch(console.error());
-});
-
-client.on("roleCreate", (role) => {
-    Channel.handle(role.guild).catch(console.error());
-});
-
-client.on("roleDelete", (role) => {
-    Channel.handle(role.guild).catch(console.error());
+updateEvents.forEach(event => {
+    client.on(event, (data) => {
+        Info.updateInfo(data.guild);
+    });
 });
 
 client.login(Config.BOT_TOKEN);
