@@ -35,7 +35,6 @@ const handleCommand = (message, guild) => {
             message.reply("Removing Simple Server Info!.");
             break;
         case "help":
-            Info.unset(guild);
             message.reply(`\nRun \`${Config.BOT_PREFIX} setup\` to start the bot.\nRun \`${Config.BOT_PREFIX} remove\` to remove bot channels.\n\n**Developed By ipmanlk & dexterlk @ LK Developers** (Join us: https://discord.gg/2PeSHh4)`);
             break;
         default:
